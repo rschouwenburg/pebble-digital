@@ -3,8 +3,8 @@
 #include "pebble.h"
 #include <ctype.h>
 
-#undef APP_LOG
-#define APP_LOG(...)
+//#undef APP_LOG
+//#define APP_LOG(...)
 
 #define KEY_VIBRATE    0
 #define KEY_EUDATE       10
@@ -494,6 +494,17 @@ static void bat_update_proc(Layer *layer, GContext *ctx) {
     }
     graphics_fill_rect(ctx, GRect(x+1, UI_TOP_BAR_Y + 5, width, 7),  0, GCornerNone);
     
+    graphics_context_set_stroke_color(ctx, GColorDarkGray);
+    graphics_draw_rect(ctx, GRect(x+1, UI_TOP_BAR_Y + 5, 16, 7));
+    
+    graphics_draw_pixel(ctx, GPoint(x,  UI_TOP_BAR_Y + 4));
+    graphics_draw_pixel(ctx, GPoint(x,  UI_TOP_BAR_Y + 12));
+    graphics_draw_pixel(ctx, GPoint(x+17,  UI_TOP_BAR_Y + 4));
+    graphics_draw_pixel(ctx, GPoint(x+17,  UI_TOP_BAR_Y + 12));
+
+    graphics_draw_pixel(ctx, GPoint(x+19,  UI_TOP_BAR_Y + 7));
+    graphics_draw_pixel(ctx, GPoint(x+19,  UI_TOP_BAR_Y + 9));
+    
     if (bat.is_charging) {
       graphics_context_set_stroke_color(ctx, GColorWhite);
       graphics_context_set_fill_color(ctx, GColorWhite);
@@ -585,7 +596,7 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
         }
       }
       
-      width = width + NUMBER_SPRITE_DEF[number].size.w + 5;
+      width = width + NUMBER_SPRITE_DEF[number].size.w + 7;
     }
   }
 //  APP_LOG(APP_LOG_LEVEL_DEBUG, "width = %d", width);
@@ -619,7 +630,7 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
       bitmap_layer_set_bitmap(s_number_layer[i], s_number_bitmap[i]);
       layer_add_child (layer, bitmap_layer_get_layer(s_number_layer[i]));
       
-      x = x + NUMBER_SPRITE_DEF[number].size.w + 5;
+      x = x + NUMBER_SPRITE_DEF[number].size.w + 7;
     }
   }
 }
@@ -675,7 +686,7 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
         number = number - 65;
       }
       
-      width = width + ALPANUMERIC_SPRITE_DEF[number].size.w + 1;
+      width = width + ALPANUMERIC_SPRITE_DEF[number].size.w + 2;
 //      APP_LOG(APP_LOG_LEVEL_DEBUG, "date number = %d (width = %d, size = %d)", number, width,  ALPANUMERIC_SPRITE_DEF[number].size.w);
     }
   }
@@ -709,7 +720,7 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
       bitmap_layer_set_bitmap(s_label_layer[i], s_label_bitmap[i]);
       layer_add_child(layer, bitmap_layer_get_layer(s_label_layer[i]));
       
-      x = x + ALPANUMERIC_SPRITE_DEF[number].size.w + 1;
+      x = x + ALPANUMERIC_SPRITE_DEF[number].size.w + 2;
     }
   }
 }

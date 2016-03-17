@@ -30,16 +30,16 @@
                 "type": "bitmap"
             },
             {
-                "file": "images/roboto-thin-20-alphanumberic",
+                "file": "images/roboto-thin-64-numberic-plus-colon",
                 "memoryFormat": "4BitPalette",
-                "name": "roboto_thin_20_alphanumberic",
+                "name": "roboto_thin_64_numberic_plus_colon",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
-                "file": "images/roboto-thin-64-numberic-plus-colon",
+                "file": "images/roboto-thin-20-alphanumberic",
                 "memoryFormat": "4BitPalette",
-                "name": "roboto_thin_64_numberic_plus_colon",
+                "name": "roboto_thin_20_alphanumberic",
                 "targetPlatforms": null,
                 "type": "bitmap"
             }

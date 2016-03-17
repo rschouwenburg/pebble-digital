@@ -198,7 +198,7 @@ static const GRect NUMBER_SPRITE_DEF[] = {
   { {242, 0}, {31, 48} },  // 8
   { {277, 0}, {29, 48} },  // 9
   { {313, 0}, {30, 48} },  // 0
-  { {350, 0}, {4, 48} },   // :
+  { {350, 0}, {7, 48} },   // :
 };
 
 static const GRect ALPANUMERIC_SPRITE_DEF[] = {
@@ -253,12 +253,12 @@ static const GRect WEATHER_ICON_SPRITE_DEF[] = {
 static const struct GPathInfo BT_ICON_PATH = {
   6,
     (GPoint []) {
-      {1, 4},
+      {1, 5},
       {8, 12},
       {4, 16},
       {4, 1},
-      {8, 6},
-      {1, 14}
+      {8, 5},
+      {1, 12}
     }
 };
 
