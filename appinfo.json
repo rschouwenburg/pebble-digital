@@ -1,0 +1,59 @@
+{
+    "appKeys": {
+        "KEY_24HOUR": 11,
+        "KEY_BOTTOMBAR": 8,
+        "KEY_CELSIUS": 9,
+        "KEY_EUDATE": 10,
+        "KEY_TOPBAR": 7,
+        "KEY_VIBRATE": 0,
+        "WEATHER_ICON_KEY": 2,
+        "WEATHER_SUNRISE_KEY": 4,
+        "WEATHER_SUNSET_KEY": 5,
+        "WEATHER_TEMPERATURE_KEY": 3,
+        "WEATHER_TIMESTAMP_KEY": 6
+    },
+    "capabilities": [
+        "location",
+        "configurable"
+    ],
+    "companyName": "Robert Schouwenburg",
+    "enableMultiJS": false,
+    "longName": "DIGITAL DARK",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/weather-icon-sprite-40x57.png",
+                "memoryFormat": "4BitPalette",
+                "name": "WEATHER_ICON_SPRITE_25PX",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/roboto-thin-20-alphanumberic",
+                "memoryFormat": "4BitPalette",
+                "name": "roboto_thin_20_alphanumberic",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/roboto-thin-64-numberic-plus-colon",
+                "memoryFormat": "4BitPalette",
+                "name": "roboto_thin_64_numberic_plus_colon",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "DIGITAL DARK",
+    "targetPlatforms": [
+        "basalt",
+        "chalk"
+    ],
+    "uuid": "1b80fde0-6785-4fa7-8acf-d819451a4d18",
+    "versionLabel": "1.6",
+    "watchapp": {
+        "watchface": true
+    }
+}
