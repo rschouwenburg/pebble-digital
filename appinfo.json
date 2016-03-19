@@ -23,16 +23,16 @@
     "resources": {
         "media": [
             {
-                "file": "images/weather-icon-sprite-32x45-16C-white.png",
+                "file": "images/weather-icon-sprite-40x57.png",
                 "memoryFormat": "4BitPalette",
-                "name": "WEATHER_ICON_SPRITE_25PX_WHITE",
+                "name": "WEATHER_ICON_SPRITE_25PX",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
-                "file": "images/roboto-thin-64-numberic-plus-colon",
+                "file": "images/weather-icon-sprite-32x45-16C-white.png",
                 "memoryFormat": "4BitPalette",
-                "name": "roboto_thin_64_numberic_plus_colon",
+                "name": "WEATHER_ICON_SPRITE_25PX_WHITE",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
@@ -44,16 +44,16 @@
                 "type": "bitmap"
             },
             {
-                "file": "images/roboto-thin-20-alphanumeric-16C-white.png",
+                "file": "images/roboto-thin-64-numberic-plus-colon",
                 "memoryFormat": "4BitPalette",
-                "name": "roboto_thin_20_alphanumberic_white",
+                "name": "roboto_thin_64_numberic_plus_colon",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
             {
-                "file": "images/weather-icon-sprite-40x57.png",
+                "file": "images/roboto-thin-20-alphanumeric-16C-white.png",
                 "memoryFormat": "4BitPalette",
-                "name": "WEATHER_ICON_SPRITE_25PX",
+                "name": "roboto_thin_20_alphanumberic_white",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
@@ -69,6 +69,7 @@
     "sdkVersion": "3",
     "shortName": "DIGITAL DARK",
     "targetPlatforms": [
+        "basalt",
         "chalk"
     ],
     "uuid": "8c958597-7157-42e8-b1a3-0eb80631d034",

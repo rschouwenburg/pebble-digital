@@ -27,12 +27,16 @@
 #ifdef WHITE_VERSION 
   #define FG_COLOR GColorBlack
   #define BG_COLOR GColorWhite
+  #define SUPPORT_COLOR GColorLightGray  
+  #define SUPPORT_COLOR2 GColorLightGray
   #define LARGE_FONT RESOURCE_ID_roboto_thin_64_numberic_plus_colon_white
   #define SMALL_FONT RESOURCE_ID_roboto_thin_20_alphanumberic_white
   #define ICONS RESOURCE_ID_WEATHER_ICON_SPRITE_25PX_WHITE
 #else
-  #define FG_COLOR GColorBlack
-  #define BG_COLOR GColorWhite
+  #define FG_COLOR GColorWhite
+  #define BG_COLOR GColorBlack
+  #define SUPPORT_COLOR GColorDarkGray
+  #define SUPPORT_COLOR2 GColorLightGray
   #define LARGE_FONT RESOURCE_ID_roboto_thin_64_numberic_plus_colon
   #define SMALL_FONT RESOURCE_ID_roboto_thin_20_alphanumberic
   #define ICONS RESOURCE_ID_WEATHER_ICON_SPRITE_25PX
@@ -509,9 +513,10 @@ static void bat_update_proc(Layer *layer, GContext *ctx) {
     }
     graphics_fill_rect(ctx, GRect(x+1, UI_TOP_BAR_Y + 5, width, 7),  0, GCornerNone);
     
-    graphics_context_set_stroke_color(ctx, GColorDarkGray);
+    graphics_context_set_stroke_color(ctx, SUPPORT_COLOR);
     graphics_draw_rect(ctx, GRect(x+1, UI_TOP_BAR_Y + 5, 16, 7));
     
+    graphics_context_set_stroke_color(ctx, SUPPORT_COLOR2);
     graphics_draw_pixel(ctx, GPoint(x,  UI_TOP_BAR_Y + 4));
     graphics_draw_pixel(ctx, GPoint(x,  UI_TOP_BAR_Y + 12));
     graphics_draw_pixel(ctx, GPoint(x+17,  UI_TOP_BAR_Y + 4));
@@ -586,8 +591,11 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
   
   int number;
   
+  int extra_x;
   int width = 0;
   for (int i = 0; i < 5; ++i) {
+    
+    extra_x = 0;
 
     number = s_time_buffer[i];
 //    APP_LOG(APP_LOG_LEVEL_DEBUG, "number = %d", number);
@@ -597,6 +605,7 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
 
       if ( number == 58 ) {
         number = 10;
+        extra_x = 6;
       } else {
         if ( number == 48 )
         {
@@ -606,7 +615,7 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
         }
       }
       
-      width = width + NUMBER_SPRITE_DEF[number].size.w + 7;
+      width = width + NUMBER_SPRITE_DEF[number].size.w + extra_x + 3;
     }
   }
 //  APP_LOG(APP_LOG_LEVEL_DEBUG, "width = %d", width);
@@ -614,6 +623,8 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
   int x = (bounds.size.w - (width - 5)) / 2;
   
   for (int i = 0; i < 5; ++i) {
+
+    extra_x = 0;
 
     number = s_time_buffer[i];
 //    APP_LOG(APP_LOG_LEVEL_DEBUG, "number = %d", number);
@@ -623,6 +634,7 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
 
       if ( number == 58 ) {
         number = 10;
+        extra_x = 6;
       } else {
         if ( number == 48 )
         {
@@ -640,7 +652,7 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
       bitmap_layer_set_bitmap(s_number_layer[i], s_number_bitmap[i]);
       layer_add_child (layer, bitmap_layer_get_layer(s_number_layer[i]));
       
-      x = x + NUMBER_SPRITE_DEF[number].size.w + 7;
+      x = x + NUMBER_SPRITE_DEF[number].size.w + extra_x + 3;
     }
   }
 }
