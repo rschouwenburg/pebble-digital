@@ -23,6 +23,21 @@
 #define WEATHER_VALID_FOR_SECS 7200
 #define WEATHER_RETRY_INTERVAL_SECS 300
 
+#define WHITE_VERSION 1
+#ifdef WHITE_VERSION 
+  #define FG_COLOR GColorBlack
+  #define BG_COLOR GColorWhite
+  #define LARGE_FONT RESOURCE_ID_roboto_thin_64_numberic_plus_colon_white
+  #define SMALL_FONT RESOURCE_ID_roboto_thin_20_alphanumberic_white
+  #define ICONS RESOURCE_ID_WEATHER_ICON_SPRITE_25PX_WHITE
+#else
+  #define FG_COLOR GColorBlack
+  #define BG_COLOR GColorWhite
+  #define LARGE_FONT RESOURCE_ID_roboto_thin_64_numberic_plus_colon
+  #define SMALL_FONT RESOURCE_ID_roboto_thin_20_alphanumberic
+  #define ICONS RESOURCE_ID_WEATHER_ICON_SPRITE_25PX
+#endif
+
 #ifdef PBL_ROUND
   #define UI_TOP_BAR_Y 16
   #define UI_DATE_BAR_Y 47
@@ -269,10 +284,10 @@ static bool request_weather(void) {
 static void get_weather(void *data) {
   bool result = request_weather();
   if ( !result ) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "get_weather(): request failed, trying again in 250ms");
+    APP_LOG(APP_LOG_LEVEL_INFO, "get_weather(): request failed, trying again in 1000ms");
     retries++;
-    if ( retries < 5 ) {
-      app_timer_register(500, get_weather, NULL);
+    if ( retries <= 5 ) {
+      app_timer_register(1000, get_weather, NULL);
     } else {
       retries = 0;
     }
@@ -475,8 +490,8 @@ static void bat_update_proc(Layer *layer, GContext *ctx) {
     }
     
     if ( bat_charge > 10 ) {
-      graphics_context_set_stroke_color(ctx, GColorWhite);
-      graphics_context_set_fill_color(ctx, GColorWhite);
+      graphics_context_set_stroke_color(ctx, FG_COLOR);
+      graphics_context_set_fill_color(ctx, FG_COLOR);
     } else {
       graphics_context_set_stroke_color(ctx, GColorRed);
       graphics_context_set_fill_color(ctx, GColorRed);
@@ -495,8 +510,8 @@ static void bat_update_proc(Layer *layer, GContext *ctx) {
     graphics_fill_rect(ctx, GRect(x+1, UI_TOP_BAR_Y + 5, width, 7),  0, GCornerNone);
     
     if (bat.is_charging) {
-      graphics_context_set_stroke_color(ctx, GColorWhite);
-      graphics_context_set_fill_color(ctx, GColorWhite);
+      graphics_context_set_stroke_color(ctx, FG_COLOR);
+      graphics_context_set_fill_color(ctx, FG_COLOR);
       gpath_draw_outline(ctx, s_charging_icon_gpath);
       gpath_draw_filled(ctx, s_charging_icon_gpath);
     }
@@ -511,7 +526,7 @@ static void bt_update_proc(Layer *layer, GContext *ctx) {
     bool connected = connection_service_peek_pebble_app_connection();
     if(connected)
     {
-      graphics_context_set_stroke_color(ctx, GColorWhite);
+      graphics_context_set_stroke_color(ctx, FG_COLOR);
     } else {
       graphics_context_set_stroke_color(ctx, GColorRed);
     }
@@ -520,12 +535,7 @@ static void bt_update_proc(Layer *layer, GContext *ctx) {
 }
 
 static void bg_update_proc(Layer *layer, GContext *ctx) {
-
-#if defined(DARK_VERSION)
-  graphics_context_set_fill_color(ctx, GColorBlack);
-#else
-  graphics_context_set_fill_color(ctx, GColorWhite);
-#endif
+  graphics_context_set_fill_color(ctx, BG_COLOR);
   graphics_fill_rect(ctx, layer_get_bounds(layer), 0, GCornerNone);
 }
 
@@ -746,7 +756,7 @@ static void window_load(Window *window) {
   layer_add_child(s_weather_layer, bitmap_layer_get_layer(s_weather_icon_bmlayer));
   x = ( bounds.size.w / 2 ) + 2;
   s_temperature_layer = text_layer_create(GRect(x, UI_BOTTOM_BAR_Y+16, 32, 27));
-  text_layer_set_text_color(s_temperature_layer, GColorWhite);
+  text_layer_set_text_color(s_temperature_layer, FG_COLOR);
   text_layer_set_background_color(s_temperature_layer, GColorClear);
   text_layer_set_text_alignment(s_temperature_layer, GTextAlignmentLeft);
   layer_add_child(s_weather_layer, text_layer_get_layer(s_temperature_layer));
@@ -828,9 +838,9 @@ static void init() {
   });
   window_stack_push(s_window, true);
   
-  s_numbers_sprite_bitmap = gbitmap_create_with_resource(RESOURCE_ID_roboto_thin_64_numberic_plus_colon);
-  s_weather_icons_bitmap = gbitmap_create_with_resource(RESOURCE_ID_WEATHER_ICON_SPRITE_25PX);
-  s_alphanumeric_sprite_bitmap = gbitmap_create_with_resource(RESOURCE_ID_roboto_thin_20_alphanumberic);
+  s_numbers_sprite_bitmap = gbitmap_create_with_resource(LARGE_FONT);
+  s_weather_icons_bitmap = gbitmap_create_with_resource(ICONS);
+  s_alphanumeric_sprite_bitmap = gbitmap_create_with_resource(SMALL_FONT);
     
   s_bt_icon_gpath = gpath_create(&BT_ICON_PATH);
 #ifdef PBL_ROUND
