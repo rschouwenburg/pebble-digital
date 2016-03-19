@@ -28,7 +28,7 @@
   #define FG_COLOR GColorBlack
   #define BG_COLOR GColorWhite
   #define SUPPORT_COLOR GColorLightGray  
-  #define SUPPORT_COLOR2 GColorLightGray
+  #define SUPPORT_COLOR2 GColorDarkGray
   #define LARGE_FONT RESOURCE_ID_roboto_thin_64_numberic_plus_colon_white
   #define SMALL_FONT RESOURCE_ID_roboto_thin_20_alphanumberic_white
   #define ICONS RESOURCE_ID_WEATHER_ICON_SPRITE_25PX_WHITE
