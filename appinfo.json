@@ -23,6 +23,34 @@
     "resources": {
         "media": [
             {
+                "file": "images/roboto-alphanumeric-18px-regular-white-4C.png",
+                "memoryFormat": "4BitPalette",
+                "name": "roboto_alphanumeric_18px_regular_white_4C",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/roboto-numbers-58px-thin-white-4C.png",
+                "memoryFormat": "4BitPalette",
+                "name": "roboto_numbers_58px_thin_white_4C",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/roboto-numbers-58px-thin-black-4C.png",
+                "memoryFormat": "4BitPalette",
+                "name": "roboto_numbers_58px_thin_black_4C",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
+                "file": "images/roboto-alphanumeric-18px-regular-black-4C.png",
+                "memoryFormat": "4BitPalette",
+                "name": "roboto_alphanumeric_18px_regular_black_4C",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
                 "file": "images/weather-icon-sprite-40x57.png",
                 "memoryFormat": "4BitPalette",
                 "name": "WEATHER_ICON_SPRITE_25PX",
@@ -33,34 +61,6 @@
                 "file": "images/weather-icon-sprite-32x45-16C-white.png",
                 "memoryFormat": "4BitPalette",
                 "name": "WEATHER_ICON_SPRITE_25PX_WHITE",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/roboto-thin-64-numeric-plus-colon-16C-white.png",
-                "memoryFormat": "4BitPalette",
-                "name": "roboto_thin_64_numberic_plus_colon_white",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/roboto-thin-64-numberic-plus-colon",
-                "memoryFormat": "4BitPalette",
-                "name": "roboto_thin_64_numberic_plus_colon",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/roboto-thin-20-alphanumeric-16C-white.png",
-                "memoryFormat": "4BitPalette",
-                "name": "roboto_thin_20_alphanumberic_white",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/roboto-thin-20-alphanumberic",
-                "memoryFormat": "4BitPalette",
-                "name": "roboto_thin_20_alphanumberic",
                 "targetPlatforms": null,
                 "type": "bitmap"
             }

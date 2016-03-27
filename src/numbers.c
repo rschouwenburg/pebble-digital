@@ -3,8 +3,8 @@
 #include "pebble.h"
 #include <ctype.h>
 
-//#undef APP_LOG
-//#define APP_LOG(...)
+#undef APP_LOG
+#define APP_LOG(...)
 
 #define KEY_VIBRATE    0
 #define KEY_EUDATE       10
@@ -29,28 +29,28 @@
   #define BG_COLOR GColorWhite
   #define SUPPORT_COLOR GColorLightGray  
   #define SUPPORT_COLOR2 GColorDarkGray
-  #define LARGE_FONT RESOURCE_ID_roboto_thin_64_numberic_plus_colon_white
-  #define SMALL_FONT RESOURCE_ID_roboto_thin_20_alphanumberic_white
+  #define LARGE_FONT RESOURCE_ID_roboto_numbers_58px_thin_white_4C
+  #define SMALL_FONT RESOURCE_ID_roboto_alphanumeric_18px_regular_white_4C
   #define ICONS RESOURCE_ID_WEATHER_ICON_SPRITE_25PX_WHITE
 #else
   #define FG_COLOR GColorWhite
   #define BG_COLOR GColorBlack
   #define SUPPORT_COLOR GColorDarkGray
   #define SUPPORT_COLOR2 GColorLightGray
-  #define LARGE_FONT RESOURCE_ID_roboto_thin_64_numberic_plus_colon
-  #define SMALL_FONT RESOURCE_ID_roboto_thin_20_alphanumberic
+  #define LARGE_FONT RESOURCE_ID_roboto_numbers_58px_thin_black_4C
+  #define SMALL_FONT RESOURCE_ID_roboto_alphanumeric_18px_regular_black_4C
   #define ICONS RESOURCE_ID_WEATHER_ICON_SPRITE_25PX
 #endif
 
 #ifdef PBL_ROUND
   #define UI_TOP_BAR_Y 16
-  #define UI_DATE_BAR_Y 47
-  #define UI_TIME_BAR_Y 78
+  #define UI_DATE_BAR_Y 49
+  #define UI_TIME_BAR_Y 82
   #define UI_BOTTOM_BAR_Y 122
 #else
   #define UI_TOP_BAR_Y 10
-  #define UI_DATE_BAR_Y 41
-  #define UI_TIME_BAR_Y 73
+  #define UI_DATE_BAR_Y 43
+  #define UI_TIME_BAR_Y 77
   #define UI_BOTTOM_BAR_Y 119
 #endif
 
@@ -605,7 +605,7 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
 
       if ( number == 58 ) {
         number = 10;
-        extra_x = 6;
+        extra_x = 5;
       } else {
         if ( number == 48 )
         {
@@ -615,7 +615,7 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
         }
       }
       
-      width = width + NUMBER_SPRITE_DEF[number].size.w + extra_x + 3;
+      width = width + NUMBER_SPRITE_DEF[number].size.w + extra_x + 0;
     }
   }
 //  APP_LOG(APP_LOG_LEVEL_DEBUG, "width = %d", width);
@@ -634,7 +634,7 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
 
       if ( number == 58 ) {
         number = 10;
-        extra_x = 6;
+        extra_x = 5;
       } else {
         if ( number == 48 )
         {
@@ -652,7 +652,7 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
       bitmap_layer_set_bitmap(s_number_layer[i], s_number_bitmap[i]);
       layer_add_child (layer, bitmap_layer_get_layer(s_number_layer[i]));
       
-      x = x + NUMBER_SPRITE_DEF[number].size.w + extra_x + 3;
+      x = x + NUMBER_SPRITE_DEF[number].size.w + extra_x + 0;
     }
   }
 }
