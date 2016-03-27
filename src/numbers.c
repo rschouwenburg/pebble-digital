@@ -3,8 +3,8 @@
 #include "pebble.h"
 #include <ctype.h>
 
-#undef APP_LOG
-#define APP_LOG(...)
+//#undef APP_LOG
+//#define APP_LOG(...)
 
 #define KEY_VIBRATE    0
 #define KEY_EUDATE       10
@@ -23,7 +23,7 @@
 #define WEATHER_VALID_FOR_SECS 7200
 #define WEATHER_RETRY_INTERVAL_SECS 300
 
-#define WHITE_VERSION 1
+//#define WHITE_VERSION 1
 #ifdef WHITE_VERSION 
   #define FG_COLOR GColorBlack
   #define BG_COLOR GColorWhite
@@ -31,7 +31,7 @@
   #define SUPPORT_COLOR2 GColorDarkGray
   #define LARGE_FONT RESOURCE_ID_roboto_numbers_58px_thin_white_4C
   #define SMALL_FONT RESOURCE_ID_roboto_alphanumeric_18px_regular_white_4C
-  #define ICONS RESOURCE_ID_WEATHER_ICON_SPRITE_25PX_WHITE
+  #define ICONS RESOURCE_ID_weathericons_sprite_32x32_white_16C
 #else
   #define FG_COLOR GColorWhite
   #define BG_COLOR GColorBlack
@@ -39,7 +39,7 @@
   #define SUPPORT_COLOR2 GColorLightGray
   #define LARGE_FONT RESOURCE_ID_roboto_numbers_58px_thin_black_4C
   #define SMALL_FONT RESOURCE_ID_roboto_alphanumeric_18px_regular_black_4C
-  #define ICONS RESOURCE_ID_WEATHER_ICON_SPRITE_25PX
+  #define ICONS RESOURCE_ID_weathericons_sprite_32x32_black_16C
 #endif
 
 #ifdef PBL_ROUND
@@ -384,17 +384,17 @@ static void weather_update_proc(Layer *layer, GContext *ctx) {
     }
         
     uint16_t x = icon.x * 32;
-    uint16_t y = WEATHER_ICON_SPRITE_LINES[icon.y];
-    uint16_t height = WEATHER_ICON_SPRITE_LINES[icon.y+1] - WEATHER_ICON_SPRITE_LINES[icon.y];
+    uint16_t y = 0;
+    uint16_t height = 32;
     uint16_t width = 32;
     GRect area = { { x, y }, {width, height} };
       
     s_weather_icon_bitmap = gbitmap_create_as_sub_bitmap(s_weather_icons_bitmap, area);
     bitmap_layer_set_bitmap(s_weather_icon_bmlayer, s_weather_icon_bitmap);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "plotting code = %d, x=%d, y=%d", current_weather.code, icon.x, icon.y);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "plotting code = %d, x=%d", current_weather.code, icon.x);
     
   } else {
-    GRect area = { { WEATHER_DAY_ICONS_CODE_DEF[0].x * 32, WEATHER_ICON_SPRITE_LINES[WEATHER_DAY_ICONS_CODE_DEF[0].y]}, { 32, 24} };
+    GRect area = { { WEATHER_DAY_ICONS_CODE_DEF[0].x * 32, 0}, { 32, 32} };
     
     s_weather_icon_bitmap = gbitmap_create_as_sub_bitmap(s_weather_icons_bitmap, area);
     bitmap_layer_set_bitmap(s_weather_icon_bmlayer, s_weather_icon_bitmap);
@@ -775,7 +775,7 @@ static void window_load(Window *window) {
   layer_set_update_proc(s_weather_layer, weather_update_proc);
   layer_add_child(window_layer, s_weather_layer);
   int x = ( bounds.size.w / 2 ) - 34;
-  s_weather_icon_bmlayer = bitmap_layer_create(GRect(x, UI_BOTTOM_BAR_Y, 40, 57));
+  s_weather_icon_bmlayer = bitmap_layer_create(GRect(x, UI_BOTTOM_BAR_Y+3, 40, 57));
   layer_add_child(s_weather_layer, bitmap_layer_get_layer(s_weather_icon_bmlayer));
   x = ( bounds.size.w / 2 ) + 2;
   s_temperature_layer = text_layer_create(GRect(x, UI_BOTTOM_BAR_Y+16, 32, 27));
