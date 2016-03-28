@@ -63,13 +63,6 @@
                 "name": "roboto_alphanumeric_18px_regular_black_4C",
                 "targetPlatforms": null,
                 "type": "bitmap"
-            },
-            {
-                "file": "images/weather-icon-sprite-32x45-16C-white.png",
-                "memoryFormat": "4BitPalette",
-                "name": "WEATHER_ICON_SPRITE_25PX_WHITE",
-                "targetPlatforms": null,
-                "type": "bitmap"
             }
         ]
     },
