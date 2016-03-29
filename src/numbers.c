@@ -23,7 +23,7 @@
 #define WEATHER_VALID_FOR_SECS 7200
 #define WEATHER_RETRY_INTERVAL_SECS 300
 
-//#define WHITE_VERSION 1
+#define WHITE_VERSION 1
 #ifdef WHITE_VERSION 
   #define FG_COLOR GColorBlack
   #define BG_COLOR GColorWhite
@@ -359,7 +359,7 @@ static void weather_update_proc(Layer *layer, GContext *ctx) {
   current_weather.code = 800;
   current_weather.temperature = 68;
 #endif 
-
+  
   GRect bounds = layer_get_bounds(layer);
   
   if (s_weather_icon_bitmap) {
@@ -423,7 +423,7 @@ static void weather_update_proc(Layer *layer, GContext *ctx) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "temperature = %d (%d)", temperature, celsius);
     
     char temperature_label[24];
-    snprintf(temperature_label, sizeof(temperature_label), "%d", temperature);
+    snprintf(temperature_label, sizeof(temperature_label), "%d%c", temperature, 167);
     for (uint8_t i = 0; i < strlen(temperature_label); ++i) {
 
       number = temperature_label[i];
@@ -774,11 +774,11 @@ static void window_load(Window *window) {
   s_weather_layer = layer_create(bounds);
   layer_set_update_proc(s_weather_layer, weather_update_proc);
   layer_add_child(window_layer, s_weather_layer);
-  int x = ( bounds.size.w / 2 ) - 34;
-  s_weather_icon_bmlayer = bitmap_layer_create(GRect(x, UI_BOTTOM_BAR_Y+3, 40, 57));
+  int x = ( bounds.size.w / 2 ) - 36;
+  s_weather_icon_bmlayer = bitmap_layer_create(GRect(x, UI_BOTTOM_BAR_Y+14, 32, 32));
   layer_add_child(s_weather_layer, bitmap_layer_get_layer(s_weather_icon_bmlayer));
-  x = ( bounds.size.w / 2 ) + 2;
-  s_temperature_layer = text_layer_create(GRect(x, UI_BOTTOM_BAR_Y+16, 32, 27));
+  x = ( bounds.size.w / 2 ) + 4;
+  s_temperature_layer = text_layer_create(GRect(x, UI_BOTTOM_BAR_Y+16, 50, 27));
   text_layer_set_text_color(s_temperature_layer, FG_COLOR);
   text_layer_set_background_color(s_temperature_layer, GColorClear);
   text_layer_set_text_alignment(s_temperature_layer, GTextAlignmentLeft);
