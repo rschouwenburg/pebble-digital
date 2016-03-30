@@ -359,6 +359,7 @@ static void weather_update_proc(Layer *layer, GContext *ctx) {
   current_weather.code = 800;
   current_weather.temperature = 68;
 #endif 
+  current_weather.code = 803;
   
   GRect bounds = layer_get_bounds(layer);
   
