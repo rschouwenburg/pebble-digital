@@ -23,7 +23,7 @@
 #define WEATHER_VALID_FOR_SECS 7200
 #define WEATHER_RETRY_INTERVAL_SECS 300
 
-#define WHITE_VERSION 1
+//#define WHITE_VERSION 1
 #ifdef WHITE_VERSION 
   #define FG_COLOR GColorBlack
   #define BG_COLOR GColorWhite
@@ -44,8 +44,8 @@
 
 #ifdef PBL_ROUND
   #define UI_TOP_BAR_Y 16
-  #define UI_DATE_BAR_Y 49
-  #define UI_TIME_BAR_Y 82
+  #define UI_DATE_BAR_Y 48
+  #define UI_TIME_BAR_Y 80
   #define UI_BOTTOM_BAR_Y 122
 #else
   #define UI_TOP_BAR_Y 10

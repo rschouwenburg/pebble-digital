@@ -18,7 +18,7 @@
     ],
     "companyName": "Robert Schouwenburg",
     "enableMultiJS": false,
-    "longName": "DIGITAL DARK",
+    "longName": "DIGITAL BLACK",
     "projectType": "native",
     "resources": {
         "media": [
@@ -67,13 +67,13 @@
         ]
     },
     "sdkVersion": "3",
-    "shortName": "DIGITAL DARK",
+    "shortName": "DIGITAL BLACK",
     "targetPlatforms": [
         "basalt",
         "chalk"
     ],
-    "uuid": "8c958597-7157-42e8-b1a3-0eb80631d034",
-    "versionLabel": "2.0",
+    "uuid": "1b80fde0-6785-4fa7-8acf-d819451a4d18",
+    "versionLabel": "2.01",
     "watchapp": {
         "watchface": true
     }
