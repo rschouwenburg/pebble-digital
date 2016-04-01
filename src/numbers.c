@@ -23,13 +23,13 @@
 #define WEATHER_VALID_FOR_SECS 7200
 #define WEATHER_RETRY_INTERVAL_SECS 300
 
-#define WHITE_VERSION 1
+//#define WHITE_VERSION 1
 #ifdef WHITE_VERSION 
   #define FG_COLOR GColorBlack
   #define BG_COLOR GColorWhite
   #define SUPPORT_COLOR GColorLightGray  
   #define SUPPORT_COLOR2 GColorDarkGray
-  #define LARGE_FONT RESOURCE_ID_roboto_numbers_58px_thin_white_4C
+  #define LARGE_FONT RESOURCE_ID_roboto_numbers_58px_light_white_4C
   #define SMALL_FONT RESOURCE_ID_roboto_alphanumeric_18px_regular_white_4C
   #define ICONS RESOURCE_ID_weathericons_sprite_32x32_white_16C
 #else
@@ -359,7 +359,6 @@ static void weather_update_proc(Layer *layer, GContext *ctx) {
   current_weather.code = 800;
   current_weather.temperature = 68;
 #endif 
-  current_weather.code = 803;
   
   GRect bounds = layer_get_bounds(layer);
   

@@ -23,6 +23,13 @@
     "resources": {
         "media": [
             {
+                "file": "images/roboto-numbers-58px-light-white-4C.png",
+                "memoryFormat": "4BitPalette",
+                "name": "roboto_numbers_58px_light_white_4C",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
                 "file": "images/weathericons-sprite-32x32-white-16C.png",
                 "memoryFormat": "4BitPalette",
                 "name": "weathericons_sprite_32x32_white_16C",
@@ -40,13 +47,6 @@
                 "file": "images/roboto-alphanumeric-18px-regular-white-4C.png",
                 "memoryFormat": "4BitPalette",
                 "name": "roboto_alphanumeric_18px_regular_white_4C",
-                "targetPlatforms": null,
-                "type": "bitmap"
-            },
-            {
-                "file": "images/roboto-numbers-58px-thin-white-4C.png",
-                "memoryFormat": "4BitPalette",
-                "name": "roboto_numbers_58px_thin_white_4C",
                 "targetPlatforms": null,
                 "type": "bitmap"
             },
