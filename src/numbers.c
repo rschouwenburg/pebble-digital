@@ -3,8 +3,8 @@
 #include "pebble.h"
 #include <ctype.h>
 
-//#undef APP_LOG
-//#define APP_LOG(...)
+#undef APP_LOG
+#define APP_LOG(...)
 
 #define KEY_VIBRATE    0
 #define KEY_EUDATE       10
@@ -23,7 +23,7 @@
 #define WEATHER_VALID_FOR_SECS 7200
 #define WEATHER_RETRY_INTERVAL_SECS 300
 
-//#define WHITE_VERSION 1
+#define WHITE_VERSION 1
 #ifdef WHITE_VERSION 
   #define FG_COLOR GColorBlack
   #define BG_COLOR GColorWhite
@@ -357,7 +357,7 @@ static void weather_update_proc(Layer *layer, GContext *ctx) {
  
 #if defined(SCREENSHOT)
   current_weather.code = 800;
-  current_weather.temperature = 68;
+  current_weather.temperature = 72;
 #endif 
   
   GRect bounds = layer_get_bounds(layer);
@@ -666,9 +666,9 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
   
   // for screenshot purposes (Tue Sep 9)
 #if defined(SCREENSHOT)
-  t->tm_mday = 9;
-  t->tm_mon = 8;
-  t->tm_wday = 2;
+  t->tm_mday = 29;
+  t->tm_mon = 2;
+  t->tm_wday = 5;
 #endif
   
   if ( eudate == 0 ) {
