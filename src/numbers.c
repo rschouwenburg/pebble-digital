@@ -697,7 +697,7 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
 
     number = s_date_buffer[i];
     
-    if ( number == 48 && i == 8 ) { // ignore leading zero in day of month
+    if ( number == 48 && ( i == 8 || i == 4 ) )  { // ignore leading zero in day of month
     } else if ( number == 32 ) { // space
 //      APP_LOG(APP_LOG_LEVEL_DEBUG, "date space = %d (%d)", number, width);
       width = width + 6;
@@ -724,7 +724,7 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
     number = s_date_buffer[i];
 //    APP_LOG(APP_LOG_LEVEL_DEBUG, "date number = %d", number);
     
-    if ( number == 48 && i == 8 ) { // ignore leading zero in day of month
+    if ( number == 48 && ( i == 8 || i == 4 ) ) { // ignore leading zero in day of month
     } else if ( number == 32 ) { // space
       x = x + 6;
     } else {
