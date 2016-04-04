@@ -23,7 +23,7 @@
 #define WEATHER_VALID_FOR_SECS 7200
 #define WEATHER_RETRY_INTERVAL_SECS 300
 
-//#define WHITE_VERSION 1
+#define WHITE_VERSION 1
 #ifdef WHITE_VERSION 
   #define FG_COLOR GColorBlack
   #define BG_COLOR GColorWhite
