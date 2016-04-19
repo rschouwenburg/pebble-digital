@@ -3,7 +3,7 @@
 #include "pebble.h"
 
 #define DARK_VERSION 1
-//#define SCREENSHOT 1
+#define SCREENSHOT 1
 
 struct weather_icons {
   uint16_t code;

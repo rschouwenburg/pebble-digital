@@ -23,7 +23,7 @@
 #define WEATHER_VALID_FOR_SECS 7200
 #define WEATHER_RETRY_INTERVAL_SECS 300
 
-#define WHITE_VERSION 1
+//#define WHITE_VERSION 1
 #ifdef WHITE_VERSION 
   #define FG_COLOR GColorBlack
   #define BG_COLOR GColorWhite
@@ -507,7 +507,12 @@ static void bat_update_proc(Layer *layer, GContext *ctx) {
   //  APP_LOG(APP_LOG_LEVEL_DEBUG, "bat width = %d", width);
     if ( bat_charge > 10 )
     {
-      graphics_context_set_fill_color(ctx, GColorBrightGreen);
+      if ( bat.is_charging )
+      {
+        graphics_context_set_fill_color(ctx, GColorBrightGreen);
+      } else {
+        graphics_context_set_fill_color(ctx, FG_COLOR);
+      }
     } else {
       graphics_context_set_fill_color(ctx, GColorRed);
     }
