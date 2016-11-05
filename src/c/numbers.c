@@ -3,20 +3,8 @@
 #include "pebble.h"
 #include <ctype.h>
 
-#undef APP_LOG
-#define APP_LOG(...)
-
-#define KEY_VIBRATE    0
-#define KEY_EUDATE       10
-//#define WEATHER_ICON_KEY         2
-//#define WEATHER_TEMPERATURE_KEY  3
-//#define WEATHER_SUNRISE_KEY      4
-//#define WEATHER_SUNSET_KEY      5
-//#define WEATHER_TIMESTAMP_KEY  6
-#define KEY_TOPBAR       7
-#define KEY_BOTTOMBAR    8
-#define KEY_CELSIUS      9
-#define KEY_24HOUR      11
+//#undef APP_LOG
+//#define APP_LOG(...)
 
 // 1800, 7200, 300
 #define REQUEST_WEATHER_INTERVAL_SECS 900
@@ -85,14 +73,6 @@ int bat_charge;
 static AppSync s_sync;
 static uint8_t s_sync_buffer[128];
 
-enum WeatherKey {
-  WEATHER_ICON_KEY = 0x2,         // TUPLE_INT
-  WEATHER_TEMPERATURE_KEY = 0x3,  // TUPLE_CSTRING
-  WEATHER_SUNRISE_KEY = 0x4,      // TUPLE_INT
-  WEATHER_SUNSET_KEY = 0x5,       // TUPLE_INT
-  WEATHER_TIMESTAMP_KEY = 0x6     // TUPLE_INT
-};
-
 struct weather {
   uint32_t timestamp;
   uint16_t temperature;
@@ -123,7 +103,7 @@ static void notify_24hours(void) {
   }
 
   int value = 1;
-  dict_write_int(iter, KEY_24HOUR, &value, sizeof(int), true);
+  dict_write_int(iter, MESSAGE_KEY_T24HOUR, &value, sizeof(int), true);
   dict_write_end(iter);
 
   app_message_outbox_send();
@@ -135,79 +115,71 @@ static void sync_error_callback(DictionaryResult dict_error, AppMessageResult ap
 
 static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, const Tuple* old_tuple, void* context) {
 
-  switch (key) {
-    case WEATHER_TIMESTAMP_KEY:
+  if ( key == MESSAGE_KEY_WEATHER_TIMESTAMP ) {
       if ( new_tuple->value->uint32 > 0 ) {
         current_weather.timestamp = new_tuple->value->uint32;
-        persist_write_int(WEATHER_TIMESTAMP_KEY, current_weather.timestamp);
+        persist_write_int(MESSAGE_KEY_WEATHER_TIMESTAMP, current_weather.timestamp);
 
         APP_LOG(APP_LOG_LEVEL_DEBUG, "received timestamp: %u", (int) current_weather.timestamp);
       }
-    
-      break;
-    
-    case WEATHER_ICON_KEY:
+  }
+
+  if ( key ==  MESSAGE_KEY_WEATHER_ICON ) {
       if ( new_tuple->value->uint16 > 0 ) {
         current_weather.code = new_tuple->value->uint16;        
-        persist_write_int(WEATHER_ICON_KEY, current_weather.code);
+        persist_write_int(MESSAGE_KEY_WEATHER_ICON, current_weather.code);
         //layer_mark_dirty(s_weather_layer);
         
         APP_LOG(APP_LOG_LEVEL_DEBUG, "received weather icon: %d", new_tuple->value->uint16);
       }
+  }
 
-      break;
-
-    case WEATHER_TEMPERATURE_KEY:
+  if ( key == MESSAGE_KEY_WEATHER_TEMPERATURE ) {
       if ( new_tuple->value->uint16 ) {
         current_weather.temperature = new_tuple->value->uint16;                
-        persist_write_int(WEATHER_TEMPERATURE_KEY, current_weather.temperature);
+        persist_write_int(MESSAGE_KEY_WEATHER_TEMPERATURE, current_weather.temperature);
         //layer_mark_dirty(s_weather_layer);
         
         APP_LOG(APP_LOG_LEVEL_DEBUG, "received weather temp: %d", current_weather.temperature);
       }
+  }
 
-      break;
-
-    case WEATHER_SUNRISE_KEY:
+  if ( key == MESSAGE_KEY_WEATHER_SUNRISE ) {
       if ( new_tuple->value->uint32 > 0 ) {
         current_weather.sunrise = new_tuple->value->uint32;
-        persist_write_int(WEATHER_SUNRISE_KEY, current_weather.sunrise);
+        persist_write_int(MESSAGE_KEY_WEATHER_SUNRISE, current_weather.sunrise);
         
         APP_LOG(APP_LOG_LEVEL_DEBUG, "received sunrise at: %u",  (int) new_tuple->value->uint32);
       }
+  }
     
-      break;
-    
-    case WEATHER_SUNSET_KEY:
+  if ( key == MESSAGE_KEY_WEATHER_SUNSET ) {
       if ( new_tuple->value->uint32 > 0 ) {
         current_weather.sunset = new_tuple->value->uint32;
-        persist_write_int(WEATHER_SUNSET_KEY, current_weather.sunset);
+        persist_write_int(MESSAGE_KEY_WEATHER_SUNSET, current_weather.sunset);
         
         APP_LOG(APP_LOG_LEVEL_DEBUG, "received sunset at: %u", (int) new_tuple->value->uint32);                
       }
-
-      break;
-    
-    case KEY_VIBRATE:
+  }
+ 
+  if ( key == MESSAGE_KEY_VIBRATE ) {
       vibrate = new_tuple->value->uint32;
-      persist_write_int(KEY_VIBRATE, vibrate);
+      persist_write_int(MESSAGE_KEY_VIBRATE, vibrate);
 
       APP_LOG(APP_LOG_LEVEL_DEBUG, "vibrate set to %d", vibrate);
-              
-      break;
+  }              
     
-    case KEY_EUDATE:
-      eudate = new_tuple->value->uint32;
-      persist_write_int(KEY_EUDATE, eudate);
+  if ( key == MESSAGE_KEY_EUDATE ) {
+      eudate = new_tuple->value->uint8 - 48;
+      persist_write_int(MESSAGE_KEY_EUDATE, eudate);
       layer_mark_dirty(s_date_layer);
     
       APP_LOG(APP_LOG_LEVEL_DEBUG, "eudate set to %d", eudate);
-              
-      break;
+  }  
     
-    case KEY_TOPBAR:
+  if ( key == MESSAGE_KEY_TOPBAR ) {
       topbar = new_tuple->value->uint32;
-      persist_write_int(KEY_TOPBAR, topbar);
+      persist_write_int(MESSAGE_KEY_TOPBAR, topbar);
       if ( topbar == 0 ) {
         layer_set_hidden(s_bt_icon_layer, true);
         layer_set_hidden(s_bat_icon_layer, true);
@@ -217,12 +189,11 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
       }
    
       APP_LOG(APP_LOG_LEVEL_DEBUG, "topbar set to %d", topbar);
-              
-      break;
+  }
     
-    case KEY_BOTTOMBAR:
+  if ( key == MESSAGE_KEY_BOTTOMBAR ) {
       bottombar = new_tuple->value->uint32;
-      persist_write_int(KEY_BOTTOMBAR, bottombar);
+      persist_write_int(MESSAGE_KEY_BOTTOMBAR, bottombar);
       if ( bottombar == 0 ) {
         layer_set_hidden(s_weather_layer, true);
       } else {
@@ -230,28 +201,25 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
       }
 
       APP_LOG(APP_LOG_LEVEL_DEBUG, "bottombar set to %d", bottombar);
-              
-      break;  
+  }
     
-    case KEY_CELSIUS:
-      celsius = new_tuple->value->uint32;
-      persist_write_int(KEY_CELSIUS, celsius);
+  if ( key == MESSAGE_KEY_CELSIUS ) {
+      celsius = new_tuple->value->uint8 - 48;
+      persist_write_int(MESSAGE_KEY_CELSIUS, celsius);
       //layer_mark_dirty(s_weather_layer);
 
       APP_LOG(APP_LOG_LEVEL_DEBUG, "celsius set to %d", celsius);
-              
-      break;
+  }
     
-    case KEY_24HOUR:
+  if ( key == MESSAGE_KEY_T24HOUR ) {
       if ( new_tuple->value->uint32 == 1 ) {
         if ( notify_24hours_trigger == 1 ) {
           notify_24hours_trigger = 0;
           notify_24hours();
         }
       }
-    
-      break;
   }
+  
 }
 
 static bool request_weather(void) {
@@ -288,14 +256,15 @@ static bool request_weather(void) {
 static void get_weather(void *data) {
   bool result = request_weather();
   if ( !result ) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "get_weather(): request failed, trying again in 1000ms");
+    APP_LOG(APP_LOG_LEVEL_INFO, "get_weather(): request failed, trying again in 2000ms");
     retries++;
     if ( retries <= 5 ) {
-      app_timer_register(1000, get_weather, NULL);
+      app_timer_register(2000, get_weather, NULL);
     } else {
       retries = 0;
     }
   } else {
+    APP_LOG(APP_LOG_LEVEL_INFO, "get_weather(): request send");
     retries = 0;
   }
 }
@@ -790,17 +759,17 @@ static void window_load(Window *window) {
   layer_add_child(s_weather_layer, text_layer_get_layer(s_temperature_layer));
 
   Tuplet initial_values[] = {
-    TupletInteger(WEATHER_ICON_KEY, current_weather.code),
-    TupletInteger(WEATHER_TEMPERATURE_KEY, current_weather.temperature),
-    TupletInteger(WEATHER_SUNRISE_KEY, current_weather.sunrise),
-    TupletInteger(WEATHER_SUNSET_KEY, current_weather.sunset),
-    TupletInteger(WEATHER_TIMESTAMP_KEY, current_weather.timestamp),
-    TupletInteger(KEY_VIBRATE, vibrate),
-    TupletInteger(KEY_EUDATE, eudate),
-    TupletInteger(KEY_TOPBAR, topbar),
-    TupletInteger(KEY_BOTTOMBAR, bottombar),
-    TupletInteger(KEY_CELSIUS, celsius),
-    TupletInteger(KEY_24HOUR, 0)
+    TupletInteger(MESSAGE_KEY_WEATHER_ICON, current_weather.code),
+    TupletInteger(MESSAGE_KEY_WEATHER_TEMPERATURE, current_weather.temperature),
+    TupletInteger(MESSAGE_KEY_WEATHER_SUNRISE, current_weather.sunrise),
+    TupletInteger(MESSAGE_KEY_WEATHER_SUNSET, current_weather.sunset),
+    TupletInteger(MESSAGE_KEY_WEATHER_TIMESTAMP, current_weather.timestamp),
+    TupletInteger(MESSAGE_KEY_VIBRATE, vibrate),
+    TupletInteger(MESSAGE_KEY_EUDATE, eudate),
+    TupletInteger(MESSAGE_KEY_TOPBAR, topbar),
+    TupletInteger(MESSAGE_KEY_BOTTOMBAR, bottombar),
+    TupletInteger(MESSAGE_KEY_CELSIUS, celsius),
+    TupletInteger(MESSAGE_KEY_T24HOUR, 0)
   };
 
   app_sync_init(&s_sync, s_sync_buffer, sizeof(s_sync_buffer),
@@ -820,22 +789,22 @@ static void window_unload(Window *window) {
 
 static void init() {
   
-  if ( persist_exists(KEY_VIBRATE) )
-    vibrate = persist_read_int(KEY_VIBRATE);
-  if ( persist_exists(KEY_EUDATE) ) {
-    eudate = persist_read_int(KEY_EUDATE);
+  if ( persist_exists(MESSAGE_KEY_VIBRATE) )
+    vibrate = persist_read_int(MESSAGE_KEY_VIBRATE);
+  if ( persist_exists(MESSAGE_KEY_EUDATE) ) {
+    eudate = persist_read_int(MESSAGE_KEY_EUDATE);
   } else {
     if ( clock_is_24h_style() ) {
       eudate = 1;
       notify_24hours_trigger = 1;
     }
   }
-  if ( persist_exists(KEY_TOPBAR) )
-    topbar = persist_read_int(KEY_TOPBAR);
-  if ( persist_exists(KEY_BOTTOMBAR) )
-    bottombar = persist_read_int(KEY_BOTTOMBAR);
-  if ( persist_exists(KEY_CELSIUS) ) {
-    celsius = persist_read_int(KEY_CELSIUS);
+  if ( persist_exists(MESSAGE_KEY_TOPBAR) )
+    topbar = persist_read_int(MESSAGE_KEY_TOPBAR);
+  if ( persist_exists(MESSAGE_KEY_BOTTOMBAR) )
+    bottombar = persist_read_int(MESSAGE_KEY_BOTTOMBAR);
+  if ( persist_exists(MESSAGE_KEY_CELSIUS) ) {
+    celsius = persist_read_int(MESSAGE_KEY_CELSIUS);
   } else {
     if ( clock_is_24h_style() ) {
       celsius = 1;
@@ -845,16 +814,16 @@ static void init() {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "READ from memory: vibrate = %d, eudate = %d, celsius = %d", vibrate, eudate, celsius);
   APP_LOG(APP_LOG_LEVEL_DEBUG, "READ from memory: topbar = %d, bottombar = %d", topbar, bottombar);  
 
-  if ( persist_exists(WEATHER_ICON_KEY) )
-    current_weather.code = persist_read_int(WEATHER_ICON_KEY);
-  if ( persist_exists(WEATHER_TEMPERATURE_KEY) )
-    current_weather.temperature = persist_read_int(WEATHER_TEMPERATURE_KEY);
-  if ( persist_exists(WEATHER_SUNRISE_KEY) )
-    current_weather.sunrise = persist_read_int(WEATHER_SUNRISE_KEY);
-  if ( persist_exists(WEATHER_SUNSET_KEY) )
-    current_weather.sunset = persist_read_int(WEATHER_SUNSET_KEY);
-  if ( persist_exists(WEATHER_TIMESTAMP_KEY))
-    current_weather.timestamp = persist_read_int(WEATHER_TIMESTAMP_KEY);  
+  if ( persist_exists(MESSAGE_KEY_WEATHER_ICON) )
+    current_weather.code = persist_read_int(MESSAGE_KEY_WEATHER_ICON);
+  if ( persist_exists(MESSAGE_KEY_WEATHER_TEMPERATURE) )
+    current_weather.temperature = persist_read_int(MESSAGE_KEY_WEATHER_TEMPERATURE);
+  if ( persist_exists(MESSAGE_KEY_WEATHER_SUNRISE) )
+    current_weather.sunrise = persist_read_int(MESSAGE_KEY_WEATHER_SUNRISE);
+  if ( persist_exists(MESSAGE_KEY_WEATHER_SUNSET) )
+    current_weather.sunset = persist_read_int(MESSAGE_KEY_WEATHER_SUNSET);
+  if ( persist_exists(MESSAGE_KEY_WEATHER_TIMESTAMP))
+    current_weather.timestamp = persist_read_int(MESSAGE_KEY_WEATHER_TIMESTAMP);  
       
   APP_LOG(APP_LOG_LEVEL_DEBUG, "READ from memory: icon = %d, temperature = %d, ts = %u", current_weather.code, current_weather.temperature, (int) current_weather.timestamp);
   APP_LOG(APP_LOG_LEVEL_DEBUG, "READ from memory: sunrise = %u, sunset = %u", (int) current_weather.sunrise, (int) current_weather.sunset);
