@@ -9,7 +9,6 @@ module.exports =
   },
   {
   "type": "section",
-  "capabilities": ["BW"],
   "items": [
     {
       "type": "heading",

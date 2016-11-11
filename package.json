@@ -5,13 +5,13 @@
         "pebble-clay": "^1.0.3"
     },
     "keywords": [],
-    "name": "digital",
+    "name": "numbers",
     "pebble": {
         "capabilities": [
             "location",
             "configurable"
         ],
-        "displayName": "DIGITAL",
+        "displayName": "Numbers",
         "enableMultiJS": true,
         "messageKeys": [
             "VIBRATE",
@@ -91,5 +91,5 @@
             "watchface": true
         }
     },
-    "version": "2.5.0"
+    "version": "2.12.0"
 }

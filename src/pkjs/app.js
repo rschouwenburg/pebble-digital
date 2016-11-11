@@ -4,8 +4,8 @@ var clay = new Clay(clayConfig);
 
 var MessageQueue = require('message-queue-pebble');
 
-//var console = {};
-//console.log = function(){};
+var console = {};
+console.log = function(){};
 
 Pebble.addEventListener('ready', function() {
   console.log('PebbleKit JS ready!');
@@ -72,11 +72,8 @@ function getIPlocation() {
       if (req.status === 200) {
         console.log(req.responseText);
         var response = JSON.parse(req.responseText);
-        var pos = [];
-        pos["latitude"] = response.latitude;
-        pos["longitude"] = response.longitude;
         
-        fetchWeather(pos.latitude, pos.longitude);
+        fetchWeather(response.latitude, response.longitude);
       }
     } else {
       console.log('getIPlocation(): error ' + req.status);
@@ -99,7 +96,7 @@ function locationSuccess(pos) {
 }
 
 function locationError(err) {
-  console.warn('locationError(): error (' + err.code + '): ' + err.message);
+  console.log('locationError(): error (' + err.code + '): ' + err.message);
   getIPlocation();
 }
 
@@ -109,7 +106,7 @@ var locationOptions = {
 };
 
 Pebble.addEventListener('appmessage', function (e) {
-      console.log('received message!');
+  console.log('received message!');
 
   if ( e.payload['T24HOUR'] ) {
     console.log("24 hour set");
@@ -117,8 +114,6 @@ Pebble.addEventListener('appmessage', function (e) {
   } else {
     window.navigator.geolocation.getCurrentPosition(locationSuccess, locationError,
       locationOptions);
-    console.log(e.type);
-    console.log(e.payload.temperature);
-    console.log('message!');
+    console.log('received message to fetch weather!');
   }
 });

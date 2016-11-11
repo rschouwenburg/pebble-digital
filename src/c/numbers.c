@@ -3,32 +3,13 @@
 #include "pebble.h"
 #include <ctype.h>
 
-//#undef APP_LOG
-//#define APP_LOG(...)
+#undef APP_LOG
+#define APP_LOG(...)
 
 // 1800, 7200, 300
 #define REQUEST_WEATHER_INTERVAL_SECS 900
 #define WEATHER_VALID_FOR_SECS 7200
 #define WEATHER_RETRY_INTERVAL_SECS 300
-
-//#define WHITE_VERSION 1
-#ifdef WHITE_VERSION 
-  #define FG_COLOR GColorBlack
-  #define BG_COLOR GColorWhite
-  #define SUPPORT_COLOR GColorLightGray  
-  #define SUPPORT_COLOR2 GColorDarkGray
-  #define LARGE_FONT RESOURCE_ID_roboto_numbers_58px_light_white_4C
-  #define SMALL_FONT RESOURCE_ID_roboto_alphanumeric_18px_regular_white_4C
-  #define ICONS RESOURCE_ID_weathericons_sprite_32x32_white_16C
-#else
-  #define FG_COLOR GColorWhite
-  #define BG_COLOR GColorBlack
-  #define SUPPORT_COLOR GColorDarkGray
-  #define SUPPORT_COLOR2 GColorLightGray
-  #define LARGE_FONT RESOURCE_ID_roboto_numbers_58px_thin_black_4C
-  #define SMALL_FONT RESOURCE_ID_roboto_alphanumeric_18px_regular_black_4C
-  #define ICONS RESOURCE_ID_weathericons_sprite_32x32_black_16C
-#endif
 
 #ifdef PBL_ROUND
   #define UI_TOP_BAR_Y 16
@@ -56,6 +37,7 @@ static GBitmap *s_numbers_sprite_bitmap, *s_number_bitmap[5], *s_alphanumeric_sp
 static char s_time_buffer[12], s_date_buffer[32];
 
 bool first_run = 1;
+int theme = 0;
 int vibrate = 0;
 int eudate = 0;
 int topbar = 1;
@@ -71,7 +53,21 @@ int retries = 0;
 int bat_charge;
 
 static AppSync s_sync;
-static uint8_t s_sync_buffer[128];
+static uint8_t s_sync_buffer[164];
+
+struct theme_struct {
+  GColor8 fg_color;
+  GColor8 bg_color;
+  GColor8 support_color;
+  GColor8  support_color2;
+  uint32_t large_font;
+  uint32_t small_font;
+  uint32_t icons;
+};
+
+typedef struct theme_struct theme_type;
+  
+static theme_type theme_def;
 
 struct weather {
   uint32_t timestamp;
@@ -85,6 +81,35 @@ struct weather {
 typedef struct weather WeatherInfo;
 
 static WeatherInfo current_weather = { 0, 999, 0, 0, 0, 0 };
+
+static void change_theme(void) {
+  
+  if ( theme == 0 )
+  {
+    theme_def.fg_color = GColorWhite;
+    theme_def.bg_color = GColorBlack;
+    theme_def.support_color = GColorDarkGray;
+    theme_def.support_color2 = GColorLightGray;
+    theme_def.large_font = RESOURCE_ID_roboto_numbers_58px_thin_black_4C;
+    theme_def.small_font = RESOURCE_ID_roboto_alphanumeric_18px_regular_black_4C;
+    theme_def.icons = RESOURCE_ID_weathericons_sprite_32x32_black_16C;
+  } else {
+    theme_def.fg_color = GColorBlack;
+    theme_def.bg_color = GColorWhite;
+    theme_def.support_color = GColorLightGray;
+    theme_def.support_color2 = GColorDarkGray;
+    theme_def.large_font = RESOURCE_ID_roboto_numbers_58px_light_white_4C;
+    theme_def.small_font = RESOURCE_ID_roboto_alphanumeric_18px_regular_white_4C;
+    theme_def.icons = RESOURCE_ID_weathericons_sprite_32x32_white_16C;    
+  }
+  
+  gbitmap_destroy(s_numbers_sprite_bitmap);
+  gbitmap_destroy(s_weather_icons_bitmap);
+  gbitmap_destroy(s_alphanumeric_sprite_bitmap);
+  s_numbers_sprite_bitmap = gbitmap_create_with_resource(theme_def.large_font);
+  s_weather_icons_bitmap = gbitmap_create_with_resource(theme_def.icons);
+  s_alphanumeric_sprite_bitmap = gbitmap_create_with_resource(theme_def.small_font);
+}
 
 static void battery_handler(BatteryChargeState charge_state) {
    layer_mark_dirty(s_bat_icon_layer);
@@ -110,7 +135,7 @@ static void notify_24hours(void) {
 }
 
 static void sync_error_callback(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Sync Error: %d", app_message_error);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Sync Error: %d %d", dict_error, app_message_error);
 }
 
 static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, const Tuple* old_tuple, void* context) {
@@ -161,7 +186,15 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
         APP_LOG(APP_LOG_LEVEL_DEBUG, "received sunset at: %u", (int) new_tuple->value->uint32);                
       }
   }
- 
+  
+  if ( key == MESSAGE_KEY_THEME ) {
+      theme = new_tuple->value->uint8;
+      persist_write_int(MESSAGE_KEY_THEME, theme);
+      change_theme();
+
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "theme set to %d", theme);
+  }
+  
   if ( key == MESSAGE_KEY_VIBRATE ) {
       vibrate = new_tuple->value->uint32;
       persist_write_int(MESSAGE_KEY_VIBRATE, vibrate);
@@ -170,7 +203,9 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
   }              
     
   if ( key == MESSAGE_KEY_EUDATE ) {
-      eudate = new_tuple->value->uint8 - 48;
+      eudate = new_tuple->value->uint8;
+      if ( eudate > 47 )
+        eudate = eudate - 48;
       persist_write_int(MESSAGE_KEY_EUDATE, eudate);
       layer_mark_dirty(s_date_layer);
     
@@ -204,7 +239,9 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
   }
     
   if ( key == MESSAGE_KEY_CELSIUS ) {
-      celsius = new_tuple->value->uint8 - 48;
+      celsius = new_tuple->value->uint8;
+      if ( celsius > 47 )
+        celsius = celsius - 48;
       persist_write_int(MESSAGE_KEY_CELSIUS, celsius);
       //layer_mark_dirty(s_weather_layer);
 
@@ -212,7 +249,8 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
   }
     
   if ( key == MESSAGE_KEY_T24HOUR ) {
-      if ( new_tuple->value->uint32 == 1 ) {
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "T24HOUR set to %d and notify_24hours_trigger=%d", new_tuple->value->uint8, notify_24hours_trigger);
+      if ( new_tuple->value->uint8 == 1 ) {
         if ( notify_24hours_trigger == 1 ) {
           notify_24hours_trigger = 0;
           notify_24hours();
@@ -327,6 +365,8 @@ static void weather_update_proc(Layer *layer, GContext *ctx) {
 #if defined(SCREENSHOT)
   current_weather.code = 800;
   current_weather.temperature = 72;
+  current_weather.sunrise = (uint32_t) time(NULL);
+  current_weather.sunset = (uint32_t) time(NULL);
 #endif 
   
   GRect bounds = layer_get_bounds(layer);
@@ -463,8 +503,8 @@ static void bat_update_proc(Layer *layer, GContext *ctx) {
     }
     
     if ( bat_charge > 10 ) {
-      graphics_context_set_stroke_color(ctx, FG_COLOR);
-      graphics_context_set_fill_color(ctx, FG_COLOR);
+      graphics_context_set_stroke_color(ctx, theme_def.fg_color);
+      graphics_context_set_fill_color(ctx, theme_def.fg_color);
     } else {
       graphics_context_set_stroke_color(ctx, GColorRed);
       graphics_context_set_fill_color(ctx, GColorRed);
@@ -480,17 +520,17 @@ static void bat_update_proc(Layer *layer, GContext *ctx) {
       {
         graphics_context_set_fill_color(ctx, GColorBrightGreen);
       } else {
-        graphics_context_set_fill_color(ctx, FG_COLOR);
+        graphics_context_set_fill_color(ctx, theme_def.fg_color);
       }
     } else {
       graphics_context_set_fill_color(ctx, GColorRed);
     }
     graphics_fill_rect(ctx, GRect(x+1, UI_TOP_BAR_Y + 5, width, 7),  0, GCornerNone);
     
-    graphics_context_set_stroke_color(ctx, SUPPORT_COLOR);
+    graphics_context_set_stroke_color(ctx, theme_def.support_color);
     graphics_draw_rect(ctx, GRect(x+1, UI_TOP_BAR_Y + 5, 16, 7));
     
-    graphics_context_set_stroke_color(ctx, SUPPORT_COLOR2);
+    graphics_context_set_stroke_color(ctx, theme_def.support_color2);
     graphics_draw_pixel(ctx, GPoint(x,  UI_TOP_BAR_Y + 4));
     graphics_draw_pixel(ctx, GPoint(x,  UI_TOP_BAR_Y + 12));
     graphics_draw_pixel(ctx, GPoint(x+17,  UI_TOP_BAR_Y + 4));
@@ -500,8 +540,8 @@ static void bat_update_proc(Layer *layer, GContext *ctx) {
     graphics_draw_pixel(ctx, GPoint(x+19,  UI_TOP_BAR_Y + 9));
     
     if (bat.is_charging) {
-      graphics_context_set_stroke_color(ctx, FG_COLOR);
-      graphics_context_set_fill_color(ctx, FG_COLOR);
+      graphics_context_set_stroke_color(ctx, theme_def.fg_color);
+      graphics_context_set_fill_color(ctx, theme_def.fg_color);
       gpath_draw_outline(ctx, s_charging_icon_gpath);
       gpath_draw_filled(ctx, s_charging_icon_gpath);
     }
@@ -516,7 +556,7 @@ static void bt_update_proc(Layer *layer, GContext *ctx) {
     bool connected = connection_service_peek_pebble_app_connection();
     if(connected)
     {
-      graphics_context_set_stroke_color(ctx, FG_COLOR);
+      graphics_context_set_stroke_color(ctx, theme_def.fg_color);
     } else {
       graphics_context_set_stroke_color(ctx, GColorRed);
     }
@@ -525,7 +565,7 @@ static void bt_update_proc(Layer *layer, GContext *ctx) {
 }
 
 static void bg_update_proc(Layer *layer, GContext *ctx) {
-  graphics_context_set_fill_color(ctx, BG_COLOR);
+  graphics_context_set_fill_color(ctx, theme_def.bg_color);
   graphics_fill_rect(ctx, layer_get_bounds(layer), 0, GCornerNone);
 }
 
@@ -753,7 +793,7 @@ static void window_load(Window *window) {
   layer_add_child(s_weather_layer, bitmap_layer_get_layer(s_weather_icon_bmlayer));
   x = ( bounds.size.w / 2 ) + 4;
   s_temperature_layer = text_layer_create(GRect(x, UI_BOTTOM_BAR_Y+16, 50, 27));
-  text_layer_set_text_color(s_temperature_layer, FG_COLOR);
+  text_layer_set_text_color(s_temperature_layer, theme_def.fg_color);
   text_layer_set_background_color(s_temperature_layer, GColorClear);
   text_layer_set_text_alignment(s_temperature_layer, GTextAlignmentLeft);
   layer_add_child(s_weather_layer, text_layer_get_layer(s_temperature_layer));
@@ -764,6 +804,7 @@ static void window_load(Window *window) {
     TupletInteger(MESSAGE_KEY_WEATHER_SUNRISE, current_weather.sunrise),
     TupletInteger(MESSAGE_KEY_WEATHER_SUNSET, current_weather.sunset),
     TupletInteger(MESSAGE_KEY_WEATHER_TIMESTAMP, current_weather.timestamp),
+    TupletInteger(MESSAGE_KEY_THEME, theme),
     TupletInteger(MESSAGE_KEY_VIBRATE, vibrate),
     TupletInteger(MESSAGE_KEY_EUDATE, eudate),
     TupletInteger(MESSAGE_KEY_TOPBAR, topbar),
@@ -789,6 +830,9 @@ static void window_unload(Window *window) {
 
 static void init() {
   
+  if ( persist_exists(MESSAGE_KEY_THEME) )
+    theme = persist_read_int(MESSAGE_KEY_THEME);
+  change_theme();
   if ( persist_exists(MESSAGE_KEY_VIBRATE) )
     vibrate = persist_read_int(MESSAGE_KEY_VIBRATE);
   if ( persist_exists(MESSAGE_KEY_EUDATE) ) {
@@ -834,10 +878,6 @@ static void init() {
     .unload = window_unload,
   });
   window_stack_push(s_window, true);
-  
-  s_numbers_sprite_bitmap = gbitmap_create_with_resource(LARGE_FONT);
-  s_weather_icons_bitmap = gbitmap_create_with_resource(ICONS);
-  s_alphanumeric_sprite_bitmap = gbitmap_create_with_resource(SMALL_FONT);
     
   s_bt_icon_gpath = gpath_create(&BT_ICON_PATH);
 #ifdef PBL_ROUND
