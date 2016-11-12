@@ -17,10 +17,17 @@
   #define UI_TIME_BAR_Y 80
   #define UI_BOTTOM_BAR_Y 122
 #else
-  #define UI_TOP_BAR_Y 10
-  #define UI_DATE_BAR_Y 43
-  #define UI_TIME_BAR_Y 77
-  #define UI_BOTTOM_BAR_Y 119
+  #if PBL_DISPLAY_HEIGHT == 228
+    #define UI_TOP_BAR_Y PBL_DISPLAY_HEIGHT / 17
+    #define UI_DATE_BAR_Y PBL_DISPLAY_HEIGHT / 2 - PBL_DISPLAY_HEIGHT / 13 * 3
+    #define UI_TIME_BAR_Y PBL_DISPLAY_HEIGHT / 2 - PBL_DISPLAY_HEIGHT / 13
+    #define UI_BOTTOM_BAR_Y PBL_DISPLAY_HEIGHT - 32 - PBL_DISPLAY_HEIGHT / 10
+  #else
+    #define UI_TOP_BAR_Y 10
+    #define UI_DATE_BAR_Y 41
+    #define UI_TIME_BAR_Y 73
+    #define UI_BOTTOM_BAR_Y 119
+  #endif 
 #endif
 
 static Window *s_window;
@@ -90,7 +97,11 @@ static void change_theme(void) {
     theme_def.bg_color = GColorBlack;
     theme_def.support_color = GColorDarkGray;
     theme_def.support_color2 = GColorLightGray;
+#if PBL_DISPLAY_HEIGHT == 228
+    theme_def.large_font = RESOURCE_ID_roboto_numbers_72px_light_black_4C;
+#else
     theme_def.large_font = RESOURCE_ID_roboto_numbers_58px_thin_black_4C;
+#endif
     theme_def.small_font = RESOURCE_ID_roboto_alphanumeric_18px_regular_black_4C;
     theme_def.icons = RESOURCE_ID_weathericons_sprite_32x32_black_16C;
   } else {
@@ -98,7 +109,11 @@ static void change_theme(void) {
     theme_def.bg_color = GColorWhite;
     theme_def.support_color = GColorLightGray;
     theme_def.support_color2 = GColorDarkGray;
+#if PBL_DISPLAY_HEIGHT == 228
+    theme_def.large_font = RESOURCE_ID_roboto_numbers_72px_light_white_4C;
+#else
     theme_def.large_font = RESOURCE_ID_roboto_numbers_58px_light_white_4C;
+#endif
     theme_def.small_font = RESOURCE_ID_roboto_alphanumeric_18px_regular_white_4C;
     theme_def.icons = RESOURCE_ID_weathericons_sprite_32x32_white_16C;    
   }
@@ -492,7 +507,7 @@ static void bat_update_proc(Layer *layer, GContext *ctx) {
 #ifdef PBL_ROUND
     int x = 93;
 #else
-    int x = 113;
+    int x = PBL_DISPLAY_WIDTH - 31;
 #endif
     
     if ( bat.is_charging && bat.charge_percent > bat_charge ) {
@@ -629,7 +644,11 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
         }
       }
       
+      #if PBL_DISPLAY_HEIGHT == 228
+      width = width + NUMBER_72PX_SPRITE_DEF[number].size.w + extra_x + 0;
+      #else      
       width = width + NUMBER_SPRITE_DEF[number].size.w + extra_x + 0;
+      #endif
     }
   }
 //  APP_LOG(APP_LOG_LEVEL_DEBUG, "width = %d", width);
@@ -660,13 +679,22 @@ static void time_update_proc(Layer *layer, GContext *ctx) {
       
  //     APP_LOG(APP_LOG_LEVEL_DEBUG, "sprite number = %d", number);
       
+      #if PBL_DISPLAY_HEIGHT == 228
+      s_number_bitmap[i] = gbitmap_create_as_sub_bitmap(s_numbers_sprite_bitmap, NUMBER_72PX_SPRITE_DEF[number]);
+      s_number_layer[i] = bitmap_layer_create(GRect(x, UI_TIME_BAR_Y, NUMBER_72PX_SPRITE_DEF[number].size.w, NUMBER_72PX_SPRITE_DEF[number].size.h));
+      #else
       s_number_bitmap[i] = gbitmap_create_as_sub_bitmap(s_numbers_sprite_bitmap, NUMBER_SPRITE_DEF[number]);
       s_number_layer[i] = bitmap_layer_create(GRect(x, UI_TIME_BAR_Y, NUMBER_SPRITE_DEF[number].size.w, NUMBER_SPRITE_DEF[number].size.h));
-        
+      #endif
+      
       bitmap_layer_set_bitmap(s_number_layer[i], s_number_bitmap[i]);
       layer_add_child (layer, bitmap_layer_get_layer(s_number_layer[i]));
       
+      #if PBL_DISPLAY_HEIGHT == 228
+      x = x + NUMBER_72PX_SPRITE_DEF[number].size.w + extra_x + 0;
+      #else
       x = x + NUMBER_SPRITE_DEF[number].size.w + extra_x + 0;
+      #endif
     }
   }
 }
@@ -721,12 +749,19 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
       } else if ( number >= 65 && number <= 90) {
         number = number - 65;
       }
-      
+     
       width = width + ALPANUMERIC_SPRITE_DEF[number].size.w + 2;
-//      APP_LOG(APP_LOG_LEVEL_DEBUG, "date number = %d (width = %d, size = %d)", number, width,  ALPANUMERIC_SPRITE_DEF[number].size.w);
+
+      if ( i < 9 ) {
+        // A + T need to be closer together
+        if ( number == 0 && s_date_buffer[i+1] == 19 ) {
+          width = width - 2;
+        }
+      }
+      APP_LOG(APP_LOG_LEVEL_DEBUG, "date number = %d (width = %d, size = %d)", number, width,  ALPANUMERIC_SPRITE_DEF[number].size.w);
     }
   }
-//  APP_LOG(APP_LOG_LEVEL_DEBUG, "date width = %d", width);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "date width = %d", width);
   
   int x = (bounds.size.w - width) / 2;
   
@@ -757,6 +792,12 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
       layer_add_child(layer, bitmap_layer_get_layer(s_label_layer[i]));
       
       x = x + ALPANUMERIC_SPRITE_DEF[number].size.w + 2;
+      if ( i < 9 ) {
+        // A + T need to be closer together
+        if ( number == 0 && s_date_buffer[i+1] == 19 ) {
+          x = x - 2;
+        }
+      }
     }
   }
 }
@@ -883,14 +924,15 @@ static void init() {
 #ifdef PBL_ROUND
   gpath_move_to(s_bt_icon_gpath, GPoint(72,UI_TOP_BAR_Y)); 
 #else
-  gpath_move_to(s_bt_icon_gpath, GPoint(92,UI_TOP_BAR_Y));
+  gpath_move_to(s_bt_icon_gpath, GPoint(PBL_DISPLAY_WIDTH - 52,UI_TOP_BAR_Y));
 #endif
   
   s_charging_icon_gpath = gpath_create(&CHARGING_ICON_PATH);
 #ifdef PBL_ROUND
   gpath_move_to(s_charging_icon_gpath, GPoint(115,UI_TOP_BAR_Y+3)); 
 #else
-  gpath_move_to(s_charging_icon_gpath, GPoint(135,UI_TOP_BAR_Y+3)); 
+  //gpath_move_to(s_charging_icon_gpath, GPoint(135,UI_TOP_BAR_Y+3));
+  gpath_move_to(s_charging_icon_gpath, GPoint(PBL_DISPLAY_WIDTH - 9,UI_TOP_BAR_Y+3)); 
 #endif
   tick_timer_service_subscribe(MINUTE_UNIT, handle_second_tick);  
   

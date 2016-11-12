@@ -31,6 +31,24 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/roboto-numbers-72px-light-white-4C.png",
+                    "memoryFormat": "2BitPalette",
+                    "name": "roboto_numbers_72px_light_white_4C",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/roboto-numbers-72px-light-black-4C.png",
+                    "memoryFormat": "2BitPalette",
+                    "name": "roboto_numbers_72px_light_black_4C",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/icon.png",
                     "menuIcon": true,
                     "name": "icon",
@@ -41,42 +59,64 @@
                     "file": "images/roboto-numbers-58px-light-white-4C.png",
                     "memoryFormat": "4BitPalette",
                     "name": "roboto_numbers_58px_light_white_4C",
-                    "targetPlatforms": null,
+                    "targetPlatforms": [
+                        "basalt",
+                        "chalk"
+                    ],
                     "type": "bitmap"
                 },
                 {
                     "file": "images/weathericons-sprite-32x32-white-16C.png",
                     "memoryFormat": "4BitPalette",
                     "name": "weathericons_sprite_32x32_white_16C",
-                    "targetPlatforms": null,
+                    "targetPlatforms": [
+                        "basalt",
+                        "chalk",
+                        "emery"
+                    ],
                     "type": "bitmap"
                 },
                 {
                     "file": "images/weathericons-sprite-32x32-black-16C.png",
                     "memoryFormat": "4BitPalette",
                     "name": "weathericons_sprite_32x32_black_16C",
-                    "targetPlatforms": null,
+                    "targetPlatforms": [
+                        "basalt",
+                        "chalk",
+                        "emery"
+                    ],
                     "type": "bitmap"
                 },
                 {
                     "file": "images/roboto-alphanumeric-18px-regular-white-4C.png",
                     "memoryFormat": "4BitPalette",
                     "name": "roboto_alphanumeric_18px_regular_white_4C",
-                    "targetPlatforms": null,
+                    "targetPlatforms": [
+                        "basalt",
+                        "chalk",
+                        "emery"
+                    ],
                     "type": "bitmap"
                 },
                 {
                     "file": "images/roboto-numbers-58px-thin-black-4C.png",
                     "memoryFormat": "4BitPalette",
                     "name": "roboto_numbers_58px_thin_black_4C",
-                    "targetPlatforms": null,
+                    "targetPlatforms": [
+                        "basalt",
+                        "chalk"
+                    ],
                     "type": "bitmap"
                 },
                 {
                     "file": "images/roboto-alphanumeric-18px-regular-black-4C.png",
                     "memoryFormat": "4BitPalette",
                     "name": "roboto_alphanumeric_18px_regular_black_4C",
-                    "targetPlatforms": null,
+                    "targetPlatforms": [
+                        "basalt",
+                        "chalk",
+                        "emery"
+                    ],
                     "type": "bitmap"
                 }
             ]
@@ -84,12 +124,13 @@
         "sdkVersion": "3",
         "targetPlatforms": [
             "basalt",
-            "chalk"
+            "chalk",
+            "emery"
         ],
         "uuid": "1b80fde0-6785-4fa7-8acf-d819451a4d18",
         "watchapp": {
             "watchface": true
         }
     },
-    "version": "2.12.0"
+    "version": "3.0.0"
 }
