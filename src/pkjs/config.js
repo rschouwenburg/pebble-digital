@@ -4,7 +4,7 @@ module.exports =
   {
     "type": "heading",
     "id": "main-heading",
-    "defaultValue": "Numbers settings",
+    "defaultValue": "Numbers Settings",
     "size": 1
   },
   {
