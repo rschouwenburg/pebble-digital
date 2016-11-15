@@ -542,10 +542,18 @@ static void bat_update_proc(Layer *layer, GContext *ctx) {
     }
     graphics_fill_rect(ctx, GRect(x+1, UI_TOP_BAR_Y + 5, width, 7),  0, GCornerNone);
     
-    graphics_context_set_stroke_color(ctx, theme_def.support_color);
+    if ( bat_charge > 10 ) {
+      graphics_context_set_stroke_color(ctx, theme_def.support_color);
+    } else {
+      graphics_context_set_stroke_color(ctx, GColorOrange);      
+    }
     graphics_draw_rect(ctx, GRect(x+1, UI_TOP_BAR_Y + 5, 16, 7));
     
-    graphics_context_set_stroke_color(ctx, theme_def.support_color2);
+    if ( bat_charge > 10 ) {
+      graphics_context_set_stroke_color(ctx, theme_def.support_color2);
+    } else {
+      graphics_context_set_stroke_color(ctx, GColorOrange);       
+    }
     graphics_draw_pixel(ctx, GPoint(x,  UI_TOP_BAR_Y + 4));
     graphics_draw_pixel(ctx, GPoint(x,  UI_TOP_BAR_Y + 12));
     graphics_draw_pixel(ctx, GPoint(x+17,  UI_TOP_BAR_Y + 4));
