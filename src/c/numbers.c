@@ -720,7 +720,9 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
   t->tm_mon = 2;
   t->tm_wday = 5;
 #endif
-  
+    t->tm_wday = 6;
+
+
   if ( eudate == 0 ) {
     strftime(s_date_buffer, sizeof(s_date_buffer), "%a %b %d", t);
   } else {
@@ -762,7 +764,11 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
 
       if ( i < 9 ) {
         // A + T need to be closer together
-        if ( number == 0 && s_date_buffer[i+1] == 19 ) {
+        if ( number == 0 && s_date_buffer[i+1] == 19+65 ) {
+          width = width - 1;
+        }
+        // V + <space> need to be closer together
+        if ( number == 21 && s_date_buffer[i+1] == 32 ) {
           width = width - 2;
         }
       }
@@ -802,7 +808,11 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
       x = x + ALPANUMERIC_SPRITE_DEF[number].size.w + 2;
       if ( i < 9 ) {
         // A + T need to be closer together
-        if ( number == 0 && s_date_buffer[i+1] == 19 ) {
+        if ( number == 0 && s_date_buffer[i+1] == 19+65 ) {
+          x = x - 1;
+        }
+        // V + <space> need to be closer together
+        if ( number == 21 && s_date_buffer[i+1] == 32 ) {
           x = x - 2;
         }
       }
