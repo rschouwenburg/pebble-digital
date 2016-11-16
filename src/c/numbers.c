@@ -720,8 +720,6 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
   t->tm_mon = 2;
   t->tm_wday = 5;
 #endif
-    t->tm_wday = 6;
-
 
   if ( eudate == 0 ) {
     strftime(s_date_buffer, sizeof(s_date_buffer), "%a %b %d", t);
